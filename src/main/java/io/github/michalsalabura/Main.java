@@ -1,11 +1,12 @@
 package io.github.michalsalabura;
 
+import java.io.File;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         String choice = "";
-        String filePath = "";
+        File providedFile = null;
         boolean running = true;
 
         Scanner input = new Scanner(System.in);
@@ -18,30 +19,72 @@ public class Main {
             System.out.println("3.Quit");
 
             System.out.print("Input: ");
-            choice = input.nextLine();
-
+            choice = input.nextLine().trim();
 
             if(choice.equalsIgnoreCase("1") || choice.equalsIgnoreCase("encrypt")) {
-                filePath = getPath(input);
-                System.out.print("Encrypted a file: " + filePath);
-                System.out.println(choice);
+                providedFile = getFile(input);
+                if(providedFile != null) {
+                    System.out.print("Encrypted a file: " + providedFile);
+                } else {
+                    System.out.println("Operation cancelled");
+                }
+
             } else if(choice.equalsIgnoreCase("2") || choice.equalsIgnoreCase("decrypt")) {
-                filePath = getPath(input);
-                System.out.print("Decrypted a file: " + filePath);
-                System.out.println(choice);
+                providedFile = getFile(input);
+                if(providedFile != null) {
+                    System.out.print("Decrypted a file: " + providedFile);
+                } else {
+                    System.out.println("Operation cancelled");
+                }
+
             } else if(choice.equalsIgnoreCase("3") || choice.equalsIgnoreCase("quit")) {
                 running = false;
             } else {
                 System.out.println("Please select a valid option");
             }
         }
+
         System.out.println("Goodbye!");
         input.close();
     }
-    public static String getPath(Scanner input) {
-        String path = "";
-        System.out.println("Please provide a name or a path to your file");
-        path = input.nextLine();
-        return path;
+
+    public static File getFile(Scanner input) {
+        boolean testFile = false;
+        String name = "";
+        while (!testFile) {
+            System.out.println("Please enter filename: (to cancel input 1)");
+            name =  input.nextLine();
+            if(name.equalsIgnoreCase("1")) {
+                return null;
+            }
+            testFile = validateFile(name);
+        }
+        return new File(name);
+    }
+
+    public static boolean validateFile(String path) {
+        boolean isValid = true;
+
+        try {
+            File testFile = new File(path);
+            if(!testFile.exists()) {
+                System.out.println("File does not exist");
+                isValid = false;
+            } else if(!testFile.isFile()) {
+                System.out.println("Provided name is not a file");
+                isValid = false;
+            } else if(!testFile.canRead()) {
+                System.out.println("File cannot be read");
+                isValid = false;
+            }
+            if(!path.toLowerCase().endsWith(".txt")) {
+                System.out.println("File must have a .txt extension");
+                isValid = false;
+            }
+            return isValid;
+        } catch (Exception e) {
+            System.out.println("Invalid name");
+            return false;
+        }
     }
 }
