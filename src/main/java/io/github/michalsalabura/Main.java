@@ -1,13 +1,17 @@
 package io.github.michalsalabura;
 
+import javax.crypto.SecretKey;
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException {
         String choice = "";
         File providedFile = null;
         boolean running = true;
+
+        AesEncryption aesEncryption = new AesEncryption();
 
         Scanner input = new Scanner(System.in);
 
@@ -24,7 +28,9 @@ public class Main {
             if(choice.equalsIgnoreCase("1") || choice.equalsIgnoreCase("encrypt")) {
                 providedFile = getFile(input);
                 if(providedFile != null) {
-                    System.out.print("Encrypted a file: " + providedFile);
+                    String randomKey = aesEncryption.generateKey();
+                    System.out.println("Encrypted data stored in ciphertext.txt");
+                    System.out.println("Encryption key is: " + randomKey);
                 } else {
                     System.out.println("Operation cancelled");
                 }
@@ -32,7 +38,7 @@ public class Main {
             } else if(choice.equalsIgnoreCase("2") || choice.equalsIgnoreCase("decrypt")) {
                 providedFile = getFile(input);
                 if(providedFile != null) {
-                    System.out.print("Decrypted a file: " + providedFile);
+                    System.out.println("Decrypted a file: " + providedFile);
                 } else {
                     System.out.println("Operation cancelled");
                 }
