@@ -1,12 +1,17 @@
 package io.github.michalsalabura;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import java.io.File;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         String choice = "";
         File providedFile = null;
         boolean running = true;
@@ -29,7 +34,7 @@ public class Main {
                 providedFile = getFile(input);
                 if(providedFile != null) {
                     SecretKey randomKey = aesEncryption.generateKey();
-                    System.out.println("Encrypted data stored in ciphertext.txt");
+                    aesEncryption.encryptFile(providedFile, randomKey, "ciphertext.txt");
                     System.out.println("Encryption key is: " + aesEncryption.decodeKey(randomKey));
                 } else {
                     System.out.println("Operation cancelled");
