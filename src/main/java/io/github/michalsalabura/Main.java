@@ -1,17 +1,47 @@
 package io.github.michalsalabura;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        String choice = "";
+        String filePath = "";
+        boolean running = true;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        Scanner input = new Scanner(System.in);
+
+        while (running) {
+
+            System.out.println("What would you like to do?");
+            System.out.println("1.Encrypt a file");
+            System.out.println("2.Decrypt a file");
+            System.out.println("3.Quit");
+
+            System.out.print("Input: ");
+            choice = input.nextLine();
+
+
+            if(choice.equalsIgnoreCase("1") || choice.equalsIgnoreCase("encrypt")) {
+                filePath = getPath(input);
+                System.out.print("Encrypted a file: " + filePath);
+                System.out.println(choice);
+            } else if(choice.equalsIgnoreCase("2") || choice.equalsIgnoreCase("decrypt")) {
+                filePath = getPath(input);
+                System.out.print("Decrypted a file: " + filePath);
+                System.out.println(choice);
+            } else if(choice.equalsIgnoreCase("3") || choice.equalsIgnoreCase("quit")) {
+                running = false;
+            } else {
+                System.out.println("Please select a valid option");
+            }
         }
+        System.out.println("Goodbye!");
+        input.close();
+    }
+    public static String getPath(Scanner input) {
+        String path = "";
+        System.out.println("Please provide a name or a path to your file");
+        path = input.nextLine();
+        return path;
     }
 }
