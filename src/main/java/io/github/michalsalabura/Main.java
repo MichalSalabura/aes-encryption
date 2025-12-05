@@ -28,9 +28,9 @@ public class Main {
             if(choice.equalsIgnoreCase("1") || choice.equalsIgnoreCase("encrypt")) {
                 providedFile = getFile(input);
                 if(providedFile != null) {
-                    String randomKey = aesEncryption.generateKey();
+                    SecretKey randomKey = aesEncryption.generateKey();
                     System.out.println("Encrypted data stored in ciphertext.txt");
-                    System.out.println("Encryption key is: " + randomKey);
+                    System.out.println("Encryption key is: " + aesEncryption.decodeKey(randomKey));
                 } else {
                     System.out.println("Operation cancelled");
                 }
