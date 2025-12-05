@@ -96,8 +96,7 @@ public class AesEncryption {
         File newFile =  new File(newPath);
         String originalContent = "";
 
-        try {
-            Scanner fileScanner = new Scanner(file);
+        try (Scanner fileScanner = new Scanner(file)){
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 originalContent +=  line + "\n";
