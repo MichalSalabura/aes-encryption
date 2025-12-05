@@ -141,7 +141,7 @@ public class AesEncryption {
         try (Scanner fileScanner = new Scanner(file)) {
             while(fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine().trim();
-                cipherText +=  line;
+                cipherText += line;
             }
         } catch(FileNotFoundException e) {
             System.out.println("File not found: " + e.getMessage());
