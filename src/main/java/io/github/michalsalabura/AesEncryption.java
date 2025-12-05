@@ -24,12 +24,17 @@ public class AesEncryption {
     }
 
     public String decodeKey(SecretKey key) {
-        return Base64.getEncoder().encodeToString(key.getEncoded());
-    }
+            String textKey = Base64.getEncoder().encodeToString(key.getEncoded());
+            return textKey.substring(0, textKey.length()-2);
+        }
 
     public SecretKey validateKey(String key) {
         if(key == null || key.trim().isEmpty()) {
             System.out.println("No key provided");
+            return null;
+        }
+        if(key.endsWith("=")) {
+            System.out.println("Invalid key provided");
             return null;
         }
         try {
