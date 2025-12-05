@@ -43,7 +43,10 @@ public class Main {
             } else if(choice.equalsIgnoreCase("2") || choice.equalsIgnoreCase("decrypt")) {
                 providedFile = getFile(input);
                 if(providedFile != null) {
-                    System.out.println("Decrypted a file: " + providedFile);
+                    System.out.println("Please provide a key: ");
+                    String key = input.nextLine();
+                    SecretKey randomKey = aesEncryption.encodeKey(key);
+                    aesEncryption.decryptFile(providedFile, randomKey, "plaintext.txt");
                 } else {
                     System.out.println("Operation cancelled");
                 }

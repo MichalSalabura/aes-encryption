@@ -74,4 +74,42 @@ public class AesEncryption {
         return true;
     }
 
+    public boolean decryptFile(File file, SecretKey key, String newPath) throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
+        File newFile = new File(newPath);
+        String cipherText = "";
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while(fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine().trim();
+                cipherText +=  line;
+            }
+        } catch(FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+            return false;
+        }
+        byte[] combined = Base64.getDecoder().decode(cipherText);
+
+        byte[] ivBytes = new byte[16];
+        System.arraycopy(combined, 0, ivBytes, 0, ivBytes.length);
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
+
+        byte[] encrypted = new byte[combined.length - 16];
+        System.arraycopy(combined, 16, encrypted, 0, encrypted.length);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        String decryptedContent = new String(decrypted);
+
+        try(FileWriter writer = new FileWriter(newFile)) {
+            writer.write(decryptedContent);
+            System.out.println("File decrypted");
+        } catch (IOException e) {
+            System.out.println("Error writing File: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
 }
