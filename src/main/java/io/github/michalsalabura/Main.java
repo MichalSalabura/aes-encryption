@@ -45,7 +45,21 @@ public class Main {
                 if(providedFile != null) {
                     System.out.println("Please provide a key: ");
                     String key = input.nextLine();
-                    SecretKey randomKey = aesEncryption.encodeKey(key);
+                    SecretKey randomKey = aesEncryption.validateKey(key);
+
+                    if (randomKey != null && !aesEncryption.isCorrectKey(providedFile, randomKey)) {
+                        randomKey = null;
+                    }
+
+                    while(randomKey == null) {
+                        System.out.println("Please provide a valid key: ");
+                        key = input.nextLine();
+                        randomKey = aesEncryption.validateKey(key);
+                        if (randomKey != null && !aesEncryption.isCorrectKey(providedFile, randomKey)) {
+                            randomKey = null;
+                        }
+                    }
+
                     aesEncryption.decryptFile(providedFile, randomKey, "plaintext.txt");
                 } else {
                     System.out.println("Operation cancelled");

@@ -27,9 +27,69 @@ public class AesEncryption {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
-    public SecretKey encodeKey(String key) {
-        byte[] keyBytes = Base64.getDecoder().decode(key);
-        return new SecretKeySpec(keyBytes, "AES");
+    public SecretKey validateKey(String key) {
+        if(key == null || key.trim().isEmpty()) {
+            System.out.println("No key provided");
+            return null;
+        }
+        try {
+            key = key.trim();
+            byte[] keyBytes = Base64.getDecoder().decode(key);
+
+            int keyLength = keyBytes.length * 8;
+            if(keyLength != 128) {
+                System.out.println("Invalid key length");
+                return null;
+            }
+
+            return new SecretKeySpec(keyBytes, "AES");
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid key");
+            return null;
+        }
+    }
+
+    public boolean isCorrectKey(File encryptedFile, SecretKey key) {
+        try {
+            String cipherText = "";
+            try (Scanner fileScanner = new Scanner(encryptedFile)) {
+                while (fileScanner.hasNextLine()) {
+                    cipherText += fileScanner.nextLine().trim();
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found!");
+                return false;
+            }
+
+            byte[] combined = Base64.getDecoder().decode(cipherText);
+
+            byte[] ivBytes = new byte[16];
+            System.arraycopy(combined, 0, ivBytes, 0, ivBytes.length);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
+
+            byte[] encrypted = new byte[combined.length - 16];
+            System.arraycopy(combined, 16, encrypted, 0, encrypted.length);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
+            cipher.doFinal(encrypted);
+
+            return true;
+        } catch (BadPaddingException e) {
+            System.out.println("Wrong key");
+            return false;
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            System.out.println("Invalid key");
+            return false;
+        }
     }
 
     public boolean encryptFile(File file, SecretKey key, String newPath) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
