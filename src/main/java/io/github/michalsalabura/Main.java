@@ -34,8 +34,12 @@ public class Main {
                 providedFile = getFile(input);
                 if(providedFile != null) {
                     SecretKey randomKey = aesEncryption.generateKey();
-                    aesEncryption.encryptFile(providedFile, randomKey, "ciphertext.txt");
-                    System.out.println("Encryption key is: " + aesEncryption.decodeKey(randomKey));
+                    if(aesEncryption.encryptFile(providedFile, randomKey, "ciphertext.txt")) {
+                        System.out.println("Encryption key is: " + aesEncryption.decodeKey(randomKey));
+                        System.out.println("Data from the file encrypted and saved in ciphertext.txt");
+                    } else {
+                        System.out.println("Data not encrypted");
+                    }
                 } else {
                     System.out.println("Operation cancelled");
                 }
@@ -60,7 +64,11 @@ public class Main {
                         }
                     }
 
-                    aesEncryption.decryptFile(providedFile, randomKey, "plaintext.txt");
+                    if(aesEncryption.decryptFile(providedFile, randomKey, "plaintext.txt")) {
+                        System.out.println("Data decrypted and saved in plaintext.txt");
+                    } else {
+                        System.out.println("Data not decrypted");
+                    }
                 } else {
                     System.out.println("Operation cancelled");
                 }

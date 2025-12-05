@@ -126,11 +126,11 @@ public class AesEncryption {
 
         try (FileWriter writer = new FileWriter(newFile)) {
             writer.write(base64Text);
+            writer.flush();
         } catch (IOException e) {
             System.out.println("Error writing file: " + e.getMessage());
             return false;
         }
-        System.out.println("Encrypted!");
         return true;
     }
 
@@ -164,7 +164,7 @@ public class AesEncryption {
 
         try(FileWriter writer = new FileWriter(newFile)) {
             writer.write(decryptedContent);
-            System.out.println("File decrypted");
+            writer.flush();
         } catch (IOException e) {
             System.out.println("Error writing File: " + e.getMessage());
             return false;
