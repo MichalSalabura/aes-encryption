@@ -15,13 +15,11 @@ public class Main {
         String choice = "";
         File providedFile = null;
         boolean running = true;
-
         AesEncryption aesEncryption = new AesEncryption();
-
         Scanner input = new Scanner(System.in);
 
+        // Menu loop
         while (running) {
-
             System.out.println("What would you like to do?");
             System.out.println("1.Encrypt a file");
             System.out.println("2.Decrypt a file");
@@ -30,6 +28,7 @@ public class Main {
             System.out.print("Input: ");
             choice = input.nextLine().trim();
 
+            // Handle encryption
             if(choice.equalsIgnoreCase("1") || choice.equalsIgnoreCase("encrypt")) {
                 providedFile = getFile(input);
                 if(providedFile != null) {
@@ -44,6 +43,7 @@ public class Main {
                     System.out.println("Operation cancelled");
                 }
 
+                // Handle decryption
             } else if(choice.equalsIgnoreCase("2") || choice.equalsIgnoreCase("decrypt")) {
                 providedFile = getFile(input);
                 if(providedFile != null) {
@@ -51,10 +51,12 @@ public class Main {
                     String key = input.nextLine();
                     SecretKey randomKey = aesEncryption.validateKey(key);
 
+                    // Check if key is valid and correct
                     if (randomKey != null && !aesEncryption.isCorrectKey(providedFile, randomKey)) {
                         randomKey = null;
                     }
 
+                    // Loop asking for a valid key
                     while(randomKey == null) {
                         System.out.println("Please provide a valid key: ");
                         key = input.nextLine();
@@ -73,6 +75,7 @@ public class Main {
                     System.out.println("Operation cancelled");
                 }
 
+                // Handle quit
             } else if(choice.equalsIgnoreCase("3") || choice.equalsIgnoreCase("quit")) {
                 running = false;
             } else {
@@ -84,6 +87,13 @@ public class Main {
         input.close();
     }
 
+    /**
+     * Prompts the user to enter a filename and validates it.
+     * Continues prompting until a valid file is provided or user cancels.
+     *
+     * @param input Scanner object for reading user input
+     * @return File object if valid file provided, null if user cancels
+     */
     public static File getFile(Scanner input) {
         boolean testFile = false;
         String name = "";
@@ -98,6 +108,12 @@ public class Main {
         return new File(name);
     }
 
+    /**
+     * Validates that the provided path/name points to a readable .txt file.
+     *
+     * @param path the file path to validate
+     * @return true if the file exists, is readable, and has .txt extension
+     */
     public static boolean validateFile(String path) {
         boolean isValid = true;
 
