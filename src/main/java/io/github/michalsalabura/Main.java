@@ -35,55 +35,69 @@ public class Main {
                     SecretKey randomKey = aesEncryption.generateKey();
                     if(aesEncryption.encryptFile(providedFile, randomKey, "ciphertext.txt")) {
                         System.out.println("Encryption key is: " + aesEncryption.decodeKey(randomKey));
-                        System.out.println("Data from the file encrypted and saved in ciphertext.txt");
+                        System.out.println("Data from the file encrypted and saved in ciphertext.txt\n\n");
                     } else {
-                        System.out.println("Data not encrypted");
+                        System.out.println("Data not encrypted\n\n");
                     }
                 } else {
-                    System.out.println("Operation cancelled");
+                    System.out.println("Operation cancelled\n\n");
                 }
 
                 // Handle decryption
             } else if(choice.equalsIgnoreCase("2") || choice.equalsIgnoreCase("decrypt")) {
                 providedFile = getFile(input);
                 if(providedFile != null) {
-                    System.out.println("Please provide a key: ");
+                    System.out.println("Please provide a key: (input 1 to cancel)");
                     String key = input.nextLine();
-                    SecretKey randomKey = aesEncryption.validateKey(key);
 
-                    // Check if key is valid and correct
-                    if (randomKey != null && !aesEncryption.isCorrectKey(providedFile, randomKey)) {
-                        randomKey = null;
-                    }
+                    if(key.equalsIgnoreCase("1")) {
+                        System.out.println("Operation cancelled\n\n");
+                    } else {
+                        SecretKey randomKey = aesEncryption.validateKey(key);
 
-                    // Loop asking for a valid key
-                    while(randomKey == null) {
-                        System.out.println("Please provide a valid key: ");
-                        key = input.nextLine();
-                        randomKey = aesEncryption.validateKey(key);
+                        // Check if key is valid and correct
                         if (randomKey != null && !aesEncryption.isCorrectKey(providedFile, randomKey)) {
                             randomKey = null;
                         }
+
+                        // Loop asking for a valid key
+                        while(randomKey == null) {
+                            System.out.println("Please provide a valid key: (input 1 to cancel)");
+                            key = input.nextLine();
+
+                            if(key.equalsIgnoreCase("1")) {
+                                System.out.println("Operation cancelled\n\n");
+                                break;
+                            }
+
+                            randomKey = aesEncryption.validateKey(key);
+                            if (randomKey != null && !aesEncryption.isCorrectKey(providedFile, randomKey)) {
+                                randomKey = null;
+                            }
+                        }
+
+                        if(randomKey != null) {
+                            if(aesEncryption.decryptFile(providedFile, randomKey, "plaintext.txt")) {
+                                System.out.println("Data decrypted and saved in plaintext.txt\n\n");
+                            } else {
+                                System.out.println("Data not decrypted\n\n");
+                            }
+                        }
                     }
 
-                    if(aesEncryption.decryptFile(providedFile, randomKey, "plaintext.txt")) {
-                        System.out.println("Data decrypted and saved in plaintext.txt");
-                    } else {
-                        System.out.println("Data not decrypted");
-                    }
                 } else {
-                    System.out.println("Operation cancelled");
+                    System.out.println("Operation cancelled\n\n");
                 }
 
                 // Handle quit
             } else if(choice.equalsIgnoreCase("3") || choice.equalsIgnoreCase("quit")) {
                 running = false;
             } else {
-                System.out.println("Please select a valid option");
+                System.out.println("\n\nPlease select a valid option");
             }
         }
 
-        System.out.println("Goodbye!");
+        System.out.println("\n\nGoodbye!");
         input.close();
     }
 
