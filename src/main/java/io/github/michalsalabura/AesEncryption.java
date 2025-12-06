@@ -98,6 +98,11 @@ public class AesEncryption {
 
             byte[] combined = Base64.getDecoder().decode(cipherText);
 
+            if(combined.length < 16) {
+                System.out.println("File is not encrypted");
+                return false;
+            }
+
             // Extract IV from first 16 bytes
             byte[] ivBytes = new byte[16];
             System.arraycopy(combined, 0, ivBytes, 0, ivBytes.length);
@@ -209,6 +214,11 @@ public class AesEncryption {
             return false;
         }
         byte[] combined = Base64.getDecoder().decode(cipherText);
+
+        if(combined.length < 16) {
+            System.out.println("File is not encrypted");
+            return false;
+        }
 
         // Extract IV from encrypted data
         byte[] ivBytes = new byte[16];
